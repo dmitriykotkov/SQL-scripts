@@ -1,0 +1,36 @@
+bash# Key parameters
+max_connections = 200
+shared_buffers = 4GB          # 25% of RAM typically
+effective_cache_size = 12GB   # 75% of RAM typically
+work_mem = 64MB               # per sort/hash operation
+maintenance_work_mem = 1GB    # for VACUUM, index builds
+wal_level = replica
+max_wal_senders = 10
+checkpoint_completion_target = 0.9
+
+--------------------------------------------------------------
+
+# Memory settings (most impactful)
+shared_buffers = 25% of RAM        # e.g., 8GB for 32GB server
+effective_cache_size = 75% of RAM  # planner hint, e.g., 24GB
+work_mem = RAM / max_connections   # per sort operation, e.g., 64MB
+maintenance_work_mem = 1-2GB       # for VACUUM, CREATE INDEX
+
+# Checkpoint settings
+checkpoint_completion_target = 0.9  # spread checkpoint I/O
+wal_buffers = 64MB                  # WAL write buffer
+max_wal_size = 4GB                  # before forced checkpoint
+
+# Query planner
+random_page_cost = 1.1    # for SSD (default 4.0 is for HDD)
+effective_io_concurrency = 200  # for SSD
+
+# Autovacuum tuning
+autovacuum_vacuum_scale_factor = 0.01   # vacuum at 1% dead tuples
+autovacuum_analyze_scale_factor = 0.005 # analyze at 0.5%
+autovacuum_vacuum_cost_delay = 2ms      # less aggressive throttling
+
+# Logging
+log_min_duration_statement = 1000  -- log slow queries > 1s
+log_checkpoints = on
+log_lock_waits = on

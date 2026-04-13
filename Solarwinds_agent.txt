@@ -1,0 +1,41 @@
+grant execute on sys.dbms_rowid to SOLARWINDS_AGENT;
+grant create table to SOLARWINDS_AGENT;
+grant create synonym to SOLARWINDS_AGENT;
+grant create session to SOLARWINDS_AGENT;
+grant create sequence to SOLARWINDS_AGENT;
+grant unlimited tablespace to SOLARWINDS_AGENT;
+grant select any dictionary to SOLARWINDS_AGENT;
+
+create or replace view x_$KSUSE as select * from x$ksuse;
+create or replace view x_$ksusecst as select * from x$ksusecst;
+create or replace view X_$KCCCF as select * from x$KCCCF;
+create or replace view X_$KGLNA1 AS select * from x$kglna1;
+create or replace view X_$KGLNA AS select * from x$KGLNA;
+create or replace view x_$KGLCURSOR AS select * from x$KGLCURSOR;
+create or replace view x_$dbgalertext AS select * from x$dbgalertext;
+create or replace view x_$kcfio AS select * from x$kcfio;
+create or replace view x_$kcftio AS select * from x$kcftio;
+ 
+grant select on x_$ksuse to SOLARWINDS_AGENT;
+ 
+grant select on x_$ksusecst to SOLARWINDS_AGENT;
+grant select on x_$kcccf to SOLARWINDS_AGENT;
+grant select on x_$kglna1 to SOLARWINDS_AGENT;
+grant select on x_$kglcursor to SOLARWINDS_AGENT;
+grant select on x_$dbgalertext to SOLARWINDS_AGENT;
+grant select on x_$kcfio to SOLARWINDS_AGENT;
+grant select on x_$kcftio to SOLARWINDS_AGENT;
+grant select on v_$parameter to SOLARWINDS_AGENT;
+grant select on v_$instance to SOLARWINDS_AGENT;
+ 
+create or replace synonym SOLARWINDS_AGENT.x$ksuse for sys.x_$ksuse;
+ 
+create or replace synonym SOLARWINDS_AGENT.x$ksusecst for sys.x_$ksusecst;
+create or replace synonym SOLARWINDS_AGENT.x$kcccf for sys.x_$kcccf;
+create or replace synonym SOLARWINDS_AGENT.x$kglna for sys.x_$kglna;
+create or replace synonym SOLARWINDS_AGENT.x$kglna1 for sys.x_$kglna1;
+create or replace synonym SOLARWINDS_AGENT.x$kglcursor for sys.x_$kglcursor;
+create or replace synonym SOLARWINDS_AGENT.x$dbgalertext for sys.x_$dbgalertext;
+create or replace synonym SOLARWINDS_AGENT.x$kcfio for sys.x_$kcfio;
+create or replace synonym SOLARWINDS_AGENT.x$kcftio for sys.x_$kcftio;
+create or replace synonym SOLARWINDS_AGENT.mproc for dual;

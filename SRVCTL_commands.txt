@@ -1,0 +1,26 @@
+
+########## RAC Cluster DATABASE ####################################
+srvctl remove database -d info
+srvctl add database -d info -o /u01/app/oracle/product/11.2.0.4/dbhome_1
+srvctl add instance -i info_1 -d info -n dc1oda01p1
+srvctl add instance -i info_2 -d info -n dc1oda01p2
+srvctl add service -s info_app -d info -r info_1,info_2
+srvctl start instance -d info -i info_2
+
+srvctl add database -d mdmprd -o /u01/app/oracle/product/11.2.0.4/dbhome_1
+srvctl add instance -i mdmprd_1 -d mdmprd -n dc1oda01p1
+srvctl add instance -i mdmprd_2 -d mdmprd -n dc1oda01p2
+srvctl add service -s mdmprd_app -d mdmprd -r mdmprd_1,mdmprd_2
+
+srvctl convert database -d wspandw -c RACONENODE -i -d wspandw
+
+############## RAC One Node DATAVASE ################################
+srvctl add database -d wspandw -o /u01/app/oracle/product/11.2.0.4/dbhome_1 -n wspandw -c RACONENODE -e np3oda01p1,np3oda01p2 -i wspandw [-a "DATA,RECO,REDO"]
+(Comment: 
+   1. Instance name without "_1"
+   2. No "add instance" for RACONENODE
+)
+srvctl add service -s wspandw_cif_service -d wspandw
+
+srvctl start/stop database -d wspandw -n np3oda01p2
+srvctl start/stop database -d wspandw -n np3oda01p1

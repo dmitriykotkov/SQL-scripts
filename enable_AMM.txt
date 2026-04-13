@@ -1,0 +1,57 @@
+To enable automatic memory management
+
+Calculate the minimum value for MEMORY_TARGET as follows:
+
+Determine the current sizes of SGA_TARGET and PGA_AGGREGATE_TARGET by entering the following SQL*Plus command:
+
+SHOW PARAMETER TARGET
+
+NAME                          TYPE        VALUE
+------------------------------ ----------- ----------------
+archive_lag_target             integer     0
+db_flashback_retention_target  integer     1440
+fast_start_io_target           integer     0
+fast_start_mttr_target         integer     0
+memory_max_target              big integer 0
+memory_target                  big integer 0
+pga_aggregate_target           big integer 90M
+sga_target                     big integer 272M
+Run the following query to determine the maximum instance PGA allocated since the database was started:
+
+select value from v$pgastat where name='maximum PGA allocated';
+Compute the maximum value between the query result from step 2b and PGA_AGGREGATE_TARGET. Add SGA_TARGET to this value.
+
+memory_target = sga_target + max(pga_aggregate_target, maximum PGA allocated)
+For example, if SGA_TARGET is 272M and PGA_AGGREGATE_TARGET is 90M as shown above, and if the maximum PGA allocated is determined to be 120M, 
+then MEMORY_TARGET should be at least 392M (272M + 120M).
+
+Choose the value for MEMORY_TARGET that you want to use.
+
+This can be the minimum value that you computed in step 2, or you can choose to use a larger value if you have enough physical memory available.
+
+For the MEMORY_MAX_TARGET initialization parameter, decide on a maximum amount of memory that you would want to allocate to the database for the foreseeable future. 
+That is, determine the maximum value for the sum of the SGA and instance PGA sizes. This number can be larger than or the same as the MEMORY_TARGET value that you chose in the previous step.
+
+ALTER SYSTEM SET MEMORY_MAX_TARGET = nM SCOPE = SPFILE;
+where n is the value that you computed in Step 4.
+
+memory_max_target = nM
+memory_target = mM
+where n is the value that you determined in Step 4, and m is the value that you determined in step 3.
+
+Note:
+In a text initialization parameter file, if you omit the line for MEMORY_MAX_TARGET and include a value for MEMORY_TARGET, the database automatically sets MEMORY_MAX_TARGET 
+to the value of MEMORY_TARGET. If you omit the line for MEMORY_TARGET and include a value for MEMORY_MAX_TARGET, the MEMORY_TARGET parameter defaults to zero. After startup, you can then dynamically change MEMORY_TARGET to a nonzero value, provided that it does not exceed the value of MEMORY_MAX_TARGET.
+
+If you started your Oracle Database instance with a server parameter file, enter the following commands:
+
+ALTER SYSTEM SET MEMORY_TARGET = nM;
+ALTER SYSTEM SET SGA_TARGET = 0;
+ALTER SYSTEM SET PGA_AGGREGATE_TARGET = 0;
+where n is the value that you determined in step 3.
+
+-------------------------------------------------------------------
+
+MDMPRD
+pga_aggregate_target                 big integer 6G
+sga_target                           big integer 24G

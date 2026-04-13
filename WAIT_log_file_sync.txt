@@ -1,0 +1,3 @@
+
+select sid, event, time_waited, time_waited_micro
+  from v$session_event where sid=3 order by 3
